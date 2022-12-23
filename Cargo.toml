@@ -1,0 +1,15 @@
+[package]
+name = "glops"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.23.0", features = ["parking_lot", "sync"] }
+
+[dev-dependencies]
+tokio = { version = "1.23.0", features = [
+    "parking_lot",
+    "sync",
+    "rt-multi-thread",
+    "macros",
+] }
