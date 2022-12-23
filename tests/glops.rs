@@ -23,14 +23,31 @@ async fn get_existing_topic() {
 }
 
 #[tokio::test]
-async fn publish_and_receive() {
+async fn publish_and_receive_binary() {
     let topic_name = "topic name";
     let topic = glops::topic(topic_name).await;
 
     let mut subscription = topic.subscribe();
     let handle = tokio::spawn(async move { subscription.receive().await });
 
-    let msg = glops::Message::from(b"message");
+    let msg = glops::BinaryMessage::from(b"message");
+    topic.publish(msg.clone()).unwrap();
+
+    let recv_msg = handle.await.unwrap().unwrap();
+    assert_eq!(recv_msg, msg);
+}
+
+#[tokio::test]
+async fn publish_and_receive_text() {
+    let pubsub = glops::PubSub::new();
+
+    let topic_name = "topic name";
+    let topic = pubsub.topic(topic_name).await;
+
+    let mut subscription = topic.subscribe();
+    let handle = tokio::spawn(async move { subscription.receive().await });
+
+    let msg = glops::TextMessage::from("message");
     topic.publish(msg.clone()).unwrap();
 
     let recv_msg = handle.await.unwrap().unwrap();

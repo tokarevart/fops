@@ -4,12 +4,12 @@ use tokio::sync::RwLock;
 
 const TOPIC_CAPACITY: usize = 128;
 
-pub struct PubSub {
-    topics: RwLock<BTreeSet<Topic>>,
+pub struct PubSub<M: Clone> {
+    topics: RwLock<BTreeSet<Topic<M>>>,
     topic_capacity: usize,
 }
 
-impl PubSub {
+impl<M: Clone> PubSub<M> {
     pub const fn new() -> Self {
         Self {
             topics: RwLock::const_new(BTreeSet::new()),
@@ -24,11 +24,11 @@ impl PubSub {
         }
     }
 
-    pub async fn topic(&self, name: &str) -> Topic {
+    pub async fn topic(&self, name: &str) -> Topic<M> {
         self.topic_with_capacity(name, self.topic_capacity).await
     }
 
-    pub async fn topic_with_capacity(&self, name: &str, capacity: usize) -> Topic {
+    pub async fn topic_with_capacity(&self, name: &str, capacity: usize) -> Topic<M> {
         let topics = self.topics.read().await;
         if let Some(topic) = topics.get(name) {
             topic.clone()
