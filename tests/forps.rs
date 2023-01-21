@@ -1,8 +1,8 @@
-use forps::{BinaryMessage, PubSub, TextMessage};
+use forps::{BinaryMsg, PubSub, TextMsg};
 
 #[tokio::test]
 async fn create_topic() {
-    let pubsub = PubSub::<BinaryMessage>::new();
+    let pubsub = PubSub::<BinaryMsg>::new();
 
     let topic_name = b"topic name";
     let topic = pubsub.topic(topic_name).await;
@@ -11,7 +11,7 @@ async fn create_topic() {
 
 #[tokio::test]
 async fn create_two_topics() {
-    let pubsub = PubSub::<BinaryMessage>::new();
+    let pubsub = PubSub::<BinaryMsg>::new();
 
     let topic_name = b"topic name";
     let _ = pubsub.topic(topic_name).await;
@@ -22,7 +22,7 @@ async fn create_two_topics() {
 
 #[tokio::test]
 async fn get_existing_topic() {
-    let pubsub = PubSub::<BinaryMessage>::new();
+    let pubsub = PubSub::<BinaryMsg>::new();
 
     let topic_name = b"topic name";
     let _ = pubsub.topic(topic_name).await;
@@ -40,7 +40,7 @@ async fn publish_and_receive_binary() {
     let mut subscription = topic.subscribe();
     let handle = tokio::spawn(async move { subscription.receive().await });
 
-    let msg = BinaryMessage::from(b"message");
+    let msg = BinaryMsg::from(b"message");
     topic.publish(msg.clone()).unwrap();
 
     let recv_msg = handle.await.unwrap().unwrap();
@@ -57,7 +57,7 @@ async fn publish_and_receive_text() {
     let mut subscription = topic.subscribe();
     let handle = tokio::spawn(async move { subscription.receive().await });
 
-    let msg = TextMessage::from("message");
+    let msg = TextMsg::from("message");
     topic.publish(msg.clone()).unwrap();
 
     let recv_msg = handle.await.unwrap().unwrap();
