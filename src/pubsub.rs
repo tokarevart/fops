@@ -1,8 +1,6 @@
-use crate::topic::Topic;
+use crate::topic::{self, Topic};
 use std::collections::BTreeSet;
 use tokio::sync::RwLock;
-
-const TOPIC_CAPACITY: usize = 1;
 
 pub struct PubSub<M: Clone> {
     topics: RwLock<BTreeSet<Topic<M>>>,
@@ -13,7 +11,7 @@ impl<M: Clone> PubSub<M> {
     pub const fn new() -> Self {
         Self {
             topics: RwLock::const_new(BTreeSet::new()),
-            topic_capacity: TOPIC_CAPACITY,
+            topic_capacity: topic::CAPACITY,
         }
     }
 
@@ -33,7 +31,7 @@ impl<M: Clone> PubSub<M> {
         if let Some(topic) = topics.get(name) {
             topic.clone()
         } else {
-            let topic = Topic::new(name.to_vec(), capacity);
+            let topic = Topic::with_capacity(name.to_vec(), capacity);
             drop(topics);
             let mut topics = self.topics.write().await;
             if !topics.insert(topic.clone()) {

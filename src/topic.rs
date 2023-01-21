@@ -3,6 +3,8 @@ use std::cmp::Ordering;
 use std::{borrow::Borrow, hash::Hash};
 use tokio::sync::broadcast::{self, error::SendError};
 
+pub const CAPACITY: usize = 1;
+
 #[derive(Clone)]
 pub struct Topic<M: Clone> {
     name: Vec<u8>,
@@ -10,7 +12,14 @@ pub struct Topic<M: Clone> {
 }
 
 impl<M: Clone> Topic<M> {
-    pub(crate) fn new(name: Vec<u8>, capacity: usize) -> Self {
+    pub fn new(name: Vec<u8>) -> Self {
+        Self {
+            name,
+            sender: broadcast::channel(CAPACITY).0,
+        }
+    }
+
+    pub fn with_capacity(name: Vec<u8>, capacity: usize) -> Self {
         Self {
             name,
             sender: broadcast::channel(capacity).0,
