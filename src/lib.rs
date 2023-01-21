@@ -11,10 +11,10 @@ pub use topic::Topic;
 
 static PUBSUB: PubSub<BinaryMessage> = PubSub::new();
 
-pub async fn topic(name: &str) -> Topic<BinaryMessage> {
+pub async fn topic(name: &[u8]) -> Topic<BinaryMessage> {
     PUBSUB.topic(name).await
 }
 
-pub async fn topic_with_capacity(name: &str, capacity: usize) -> Topic<BinaryMessage> {
+pub async fn topic_with_capacity(name: &[u8], capacity: usize) -> Topic<BinaryMessage> {
     PUBSUB.topic_with_capacity(name, capacity).await
 }

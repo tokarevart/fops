@@ -2,7 +2,7 @@ use crate::topic::Topic;
 use std::collections::BTreeSet;
 use tokio::sync::RwLock;
 
-const TOPIC_CAPACITY: usize = 128;
+const TOPIC_CAPACITY: usize = 1;
 
 pub struct PubSub<M: Clone> {
     topics: RwLock<BTreeSet<Topic<M>>>,
@@ -24,16 +24,16 @@ impl<M: Clone> PubSub<M> {
         }
     }
 
-    pub async fn topic(&self, name: &str) -> Topic<M> {
+    pub async fn topic(&self, name: &[u8]) -> Topic<M> {
         self.topic_with_capacity(name, self.topic_capacity).await
     }
 
-    pub async fn topic_with_capacity(&self, name: &str, capacity: usize) -> Topic<M> {
+    pub async fn topic_with_capacity(&self, name: &[u8], capacity: usize) -> Topic<M> {
         let topics = self.topics.read().await;
         if let Some(topic) = topics.get(name) {
             topic.clone()
         } else {
-            let topic = Topic::new(name.to_string(), capacity);
+            let topic = Topic::new(name.to_vec(), capacity);
             drop(topics);
             let mut topics = self.topics.write().await;
             if !topics.insert(topic.clone()) {

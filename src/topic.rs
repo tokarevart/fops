@@ -1,23 +1,23 @@
 use crate::subscription::Subscription;
-use std::borrow::Borrow;
 use std::cmp::Ordering;
+use std::{borrow::Borrow, hash::Hash};
 use tokio::sync::broadcast::{self, error::SendError};
 
 #[derive(Clone)]
 pub struct Topic<M: Clone> {
-    name: String,
+    name: Vec<u8>,
     sender: broadcast::Sender<M>,
 }
 
 impl<M: Clone> Topic<M> {
-    pub(crate) fn new(name: String, capacity: usize) -> Self {
+    pub(crate) fn new(name: Vec<u8>, capacity: usize) -> Self {
         Self {
             name,
             sender: broadcast::channel(capacity).0,
         }
     }
 
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> &[u8] {
         &self.name
     }
 
@@ -53,8 +53,14 @@ impl<M: Clone> Ord for Topic<M> {
     }
 }
 
-impl<M: Clone> Borrow<str> for Topic<M> {
-    fn borrow(&self) -> &str {
+impl<M: Clone> Hash for Topic<M> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.name.hash(state);
+    }
+}
+
+impl<M: Clone> Borrow<[u8]> for Topic<M> {
+    fn borrow(&self) -> &[u8] {
         self.name.borrow()
     }
 }

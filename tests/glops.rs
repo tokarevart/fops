@@ -1,22 +1,22 @@
 #[tokio::test]
 async fn create_topic() {
-    let topic_name = "topic name";
+    let topic_name = b"topic name";
     let topic = glops::topic(topic_name).await;
     assert_eq!(topic.name(), topic_name);
 }
 
 #[tokio::test]
 async fn create_two_topics() {
-    let topic_name = "topic name";
+    let topic_name = b"topic name";
     let _ = glops::topic(topic_name).await;
-    let topic_name = "another topic name";
+    let topic_name = b"another topic name";
     let topic = glops::topic(topic_name).await;
     assert_eq!(topic.name(), topic_name);
 }
 
 #[tokio::test]
 async fn get_existing_topic() {
-    let topic_name = "topic name";
+    let topic_name = b"topic name";
     let _ = glops::topic(topic_name).await;
     let topic = glops::topic(topic_name).await;
     assert_eq!(topic.name(), topic_name);
@@ -24,7 +24,7 @@ async fn get_existing_topic() {
 
 #[tokio::test]
 async fn publish_and_receive_binary() {
-    let topic_name = "topic name";
+    let topic_name = b"topic name";
     let topic = glops::topic(topic_name).await;
 
     let mut subscription = topic.subscribe();
@@ -41,7 +41,7 @@ async fn publish_and_receive_binary() {
 async fn publish_and_receive_text() {
     let pubsub = glops::PubSub::new();
 
-    let topic_name = "topic name";
+    let topic_name = b"topic name";
     let topic = pubsub.topic(topic_name).await;
 
     let mut subscription = topic.subscribe();
