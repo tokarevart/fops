@@ -1,4 +1,4 @@
-use forps::{BinaryMsg, PubSub, TextMsg};
+use fops::{BinaryMsg, PubSub, TextMsg};
 
 #[tokio::test]
 async fn create_topic() {
