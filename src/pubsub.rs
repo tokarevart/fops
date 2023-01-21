@@ -2,6 +2,7 @@ use crate::topic::{self, Topic};
 use std::collections::BTreeSet;
 use tokio::sync::RwLock;
 
+#[derive(Debug)]
 pub struct PubSub<M: Clone> {
     topics: RwLock<BTreeSet<Topic<M>>>,
     topic_capacity: usize,

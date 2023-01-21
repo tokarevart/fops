@@ -5,7 +5,7 @@ use tokio::sync::broadcast::{self, error::SendError};
 
 pub const CAPACITY: usize = 1;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Topic<M: Clone> {
     name: Vec<u8>,
     sender: broadcast::Sender<M>,

@@ -1,5 +1,6 @@
 use tokio::sync::broadcast::{self, error::RecvError};
 
+#[derive(Debug)]
 pub struct Subscription<M: Clone> {
     pub(crate) topic_name: Vec<u8>,
     pub(crate) receiver: broadcast::Receiver<M>,
